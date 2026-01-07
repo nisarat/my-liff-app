@@ -1,31 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub LIFF</title>
+    <title>My LIFF App</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
-        img { border-radius: 50%; width: 100px; }
-        button { padding: 10px 20px; background: #00b900; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        img { border-radius: 50%; width: 100px; margin-bottom: 10px; }
+        button { 
+            display: block; width: 100%; padding: 15px; margin: 10px 0; 
+            border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;
+        }
+        .btn-msg { background-color: #28a745; }
+        .btn-flex { background-color: #007bff; }
     </style>
 </head>
 <body>
-    <div id="profile">
-        <img id="pictureUrl" src="" alt="Profile Picture" style="display:none;">
-        <h1 id="displayName">กำลังโหลด...</h1>
-    </div>
-    <button id="btnSend">ส่งข้อความทักทาย</button>
+    <img id="pictureUrl" src="" style="display:none;">
+    <h1 id="displayName">กำลังโหลด...</h1>
+
+    <button class="btn-msg" id="btnMsg">ส่งข้อความธรรมดา</button>
+    <button class="btn-flex" id="btnFlex">ส่ง Flex Message</button>
 
     <script>
         async function main() {
-            // *** สำคัญ: เดี๋ยวเราจะเอา LIFF ID มาใส่ตรงนี้ ***
-            await liff.init({ liffId: "2008820291-s6WNZ5xr" });
+            // *** อย่าลืมเปลี่ยนตรงนี้เป็น LIFF ID ของคุณ ***
+            await liff.init({ liffId: "ใส่_LIFF_ID_ของคุณที่นี่" });
 
             if (liff.isLoggedIn()) {
                 const profile = await liff.getProfile();
-                document.getElementById("displayName").innerText = "สวัสดีคุณ " + profile.displayName;
+                document.getElementById("displayName").innerText = profile.displayName;
                 document.getElementById("pictureUrl").src = profile.pictureUrl;
                 document.getElementById("pictureUrl").style.display = "inline-block";
             } else {
@@ -33,13 +38,35 @@
             }
         }
 
-        // ฟังก์ชันส่งข้อความ
-        document.getElementById("btnSend").onclick = async function() {
-            await liff.sendMessages([{
-                type: 'text',
-                text: 'สวัสดีจาก LIFF บน GitHub!'
-            }]);
-            alert("ส่งข้อความแล้ว!");
+        // ฟังก์ชันส่งข้อความธรรมดา
+        document.getElementById("btnMsg").onclick = async function() {
+            if (liff.isInClient()) {
+                await liff.sendMessages([{ type: 'text', text: 'ทักทายตอนเช้าครับ!' }]);
+                liff.closeWindow();
+            }
+        }
+
+        // ฟังก์ชันส่ง Flex Message
+        document.getElementById("btnFlex").onclick = async function() {
+            if (liff.isInClient()) {
+                await liff.sendMessages([{
+                    "type": "flex",
+                    "altText": "คุณได้รับบัตรทักทาย",
+                    "contents": {
+                        "type": "bubble",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                { "type": "text", "text": "Greeting Card", "weight": "bold", "color": "#1DB446", "size": "sm" },
+                                { "type": "text", "text": "ยินดีที่ได้รู้จัก!", "weight": "bold", "size": "xl", "margin": "md" },
+                                { "type": "text", "text": "ส่งจากระบบ LIFF ของฉันเอง", "size": "xs", "color": "#aaaaaa", "wrap": true }
+                            ]
+                        }
+                    }
+                }]);
+                liff.closeWindow();
+            }
         }
 
         main();
