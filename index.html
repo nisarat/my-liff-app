@@ -219,7 +219,31 @@
                 liff.closeWindow();
             }
         }
-
+// มองหาฟังก์ชันตอนกดปุ่มใน index.html
+document.getElementById("btnFlex").onclick = async function() {
+    if (liff.isInClient()) {
+        await liff.sendMessages([
+            {
+                "type": "flex",
+                "altText": "ข้อความนี้จะโชว์ในการแจ้งเตือน",
+                "contents": 
+                // --- เริ่มวางโค้ดที่ก๊อปมาตรงนี้ ---
+                {
+                  "type": "bubble",
+                  "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                      { "type": "text", "text": "ตัวอย่างจาก Simulator" }
+                    ]
+                  }
+                }
+                // --- สิ้นสุดการวางโค้ด ---
+            }
+        ]);
+        liff.closeWindow(); // ส่งเสร็จให้ปิดหน้าจอ
+    }
+}
         main();
     </script>
 </body>
