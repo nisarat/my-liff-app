@@ -67,14 +67,32 @@
         }
 
         async function getUserProfile() {
-            const profile = await liff.getProfile();
-            document.getElementById("displayName").innerText = profile.displayName;
-            document.getElementById("userId").innerText = "Line ID: " + profile.userId;
-            if (profile.pictureUrl) {
-                document.getElementById("pictureUrl").src = profile.pictureUrl;
-                document.getElementById("pictureUrl").style.display = "block";
-            }
+    const profile = await liff.getProfile();
+    document.getElementById("displayName").innerText = profile.displayName;
+    document.getElementById("userId").innerText = "Line ID: " + profile.userId;
+    if (profile.pictureUrl) {
+        document.getElementById("pictureUrl").src = profile.pictureUrl;
+        document.getElementById("pictureUrl").style.display = "block";
+    }
+
+    // --- ส่วนที่เพิ่มใหม่: ดึงข้อมูลจาก Google Sheets มาโชว์ ---
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?userId=${profile.userId}`);
+        const result = await response.json();
+
+        if (result.status === "found") {
+            // ถ้าเจอข้อมูล ให้เอาเบอร์โทรไปใส่ในช่อง input
+            document.getElementById("phone").value = result.phone;
+            // และเปลี่ยนข้อความปุ่มให้รู้ว่าบันทึกไปแล้ว
+            document.querySelector(".btn-save").innerText = "อัปเดตข้อมูลสมาชิก";
+            
+            // แสดงข้อความทักทายเพิ่ม (ถ้าต้องการ)
+            document.getElementById("displayName").innerText += " (สมาชิกเก่า)";
         }
+    } catch (error) {
+        console.log("ยังไม่มีข้อมูลในระบบ");
+    }
+}
 
         // --- ส่วนที่ 2: การบันทึกข้อมูล ---
         async function saveData() {
