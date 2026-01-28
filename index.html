@@ -67,16 +67,45 @@ HTML
         }
 
         function saveData() {
-            const phone = document.getElementById("phone").value;
-            if (phone.length < 9) {
-                alert("กรุณากรอกเบอร์โทรให้ถูกต้อง");
-            } else {
-                alert("บันทึกเบอร์ " + phone + " สำเร็จ!");
-                // อนาคตส่งข้อมูลไป Google Sheets ตรงนี้ได้
-            }
-        }
+        async function saveData() {
+    const phone = document.getElementById("phone").value;
+    const name = document.getElementById("displayName").innerText;
+    const userId = liff.getContext().userId; // ดึง UserId จาก LIFF
+    
+    if (phone.length < 10) {
+        alert("กรุณากรอกเบอร์โทรให้ถูกต้อง");
+        return;
+    }
 
-        main();
+    // URL ของ Google Apps Script ที่คุณก๊อปปี้มา
+    const scriptUrl = "https://docs.google.com/spreadsheets/d/1TNk0jAsFNLddlRLpH57Sg3gwE0xPofjDDACuwnimBpE/edit?usp=sharing";
+
+    try {
+        // 1. ส่งข้อมูลไปที่ Google Sheets
+        await fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                userId: userId,
+                name: name,
+                phone: phone
+            })
+        });
+
+        // 2. ถ้าส่งสำเร็จ ให้ส่ง Flex Message บอกผู้ใช้ (โค้ดเดิมที่คุณมี)
+        if (liff.isInClient()) {
+            await liff.sendMessages([{
+                "type": "text",
+                "text": "บันทึกข้อมูลสมาชิกของคุณเรียบร้อยแล้ว!"
+            }]);
+            alert("บันทึกลง Google Sheets สำเร็จ!");
+            liff.closeWindow();
+        }
+        
+    } catch (error) {
+        console.error("Error!", error);
+        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    }
+}
     </script>
 </body>
 </html>
