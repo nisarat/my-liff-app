@@ -3,170 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member & Service Portal</title>
+    <title>VIP Member Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        :root { --primary: #00b900; --secondary: #009900; --bg: #f8f9fa; }
-        body { font-family: 'Kanit', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: white; width: 100%; max-width: 400px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px; text-align: center; font-size: 1.4rem; font-weight: bold; }
-        .profile { text-align: center; padding: 20px 20px 10px; }
-        #pictureUrl { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--primary); margin: 0 auto 10px; display: none; }
-        .form-section { padding: 0 25px 20px; }
-        label { display: block; margin-top: 12px; font-size: 0.85rem; color: #666; }
-        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-family: 'Kanit'; font-size: 0.95rem; }
-        textarea { resize: none; background: #fcfcfc; }
-        .btn-save { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+        :root { --primary: #00b900; --gold: #D4AF37; --dark: #2c3e50; }
+        body { font-family: 'Kanit', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
         
-        .service-menu { padding: 0 25px 30px; }
-        .service-title { font-size: 0.9rem; color: #888; margin: 20px 0 10px; border-top: 1px solid #eee; padding-top: 15px; text-align: center; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-service { background: #fff; border: 1px solid #eee; padding: 15px 10px; border-radius: 15px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s; font-family: 'Kanit'; font-size: 0.8rem; }
-        .btn-full { grid-column: span 2; background-color: #e8f5e9; border: 1px solid #c8e6c9; }
-        .icon { font-size: 1.4rem; }
+        /* การ์ดหลัก */
+        .container { width: 100%; max-width: 400px; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; display: none; }
+        .active { display: block; animation: fadeIn 0.5s; }
 
+        /* ส่วนหัว */
+        .header { background: linear-gradient(135deg, var(--dark), #4b6584); color: white; padding: 30px 20px; text-align: center; }
+        
+        /* บัตรสมาชิกที่โชว์หลังบันทึก */
+        .member-card { 
+            background: linear-gradient(135deg, #1a1a1a, #434343); color: white; 
+            border-radius: 15px; padding: 20px; margin: 20px; position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(212,175,55,0.3);
+        }
+        .card-label { font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; }
+        .card-name { font-size: 1.4rem; font-weight: bold; margin: 10px 0; }
+        .card-detail { font-size: 0.9rem; opacity: 0.8; }
+
+        /* ฟอร์มกรอกข้อมูล */
+        .form-section { padding: 25px; }
+        label { display: block; margin-top: 15px; font-size: 0.85rem; color: #666; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-family: 'Kanit'; }
+        
+        button { 
+            width: 100%; padding: 15px; border: none; border-radius: 12px; 
+            font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Kanit';
+            margin-top: 25px;
+        }
+        .btn-main { background: var(--primary); color: white; font-size: 1.1rem; }
+        .btn-outline { background: white; color: #666; border: 1px solid #ddd; margin-top: 10px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin-bottom: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <div id="loadText">กำลังประมวลผล...</div>
-</div>
+<div id="loading" class="loading"><div>กำลังดำเนินการ...</div></div>
 
-<div class="card">
-    <div class="header">VIP MEMBER & SERVICE</div>
-    <div class="profile">
-        <img id="pictureUrl" src="">
-        <div id="displayName" style="font-weight:bold; color: #333;">Loading...</div>
+<div class="container">
+    <div id="formPage" class="card active">
+        <div class="header">ลงทะเบียนสมาชิก VIP</div>
+        <div class="form-section">
+            <label>ชื่อ-นามสกุลจริง</label>
+            <input type="text" id="fullName" placeholder="ระบุชื่อของคุณ">
+            <label>บริษัท</label>
+            <input type="text" id="company" placeholder="ระบุชื่อบริษัท">
+            <label>เบอร์โทรศัพท์</label>
+            <input type="tel" id="phone" maxlength="10">
+            <label>รายละเอียดเพิ่มเติม/โน้ต</label>
+            <textarea id="userNote" rows="3" placeholder="ระบุข้อมูลที่ต้องการแจ้ง..."></textarea>
+            
+            <button class="btn-main" onclick="saveAndShow()">บันทึกข้อมูลและออกบัตร</button>
+        </div>
     </div>
 
-    <div class="form-section">
-        <label>ชื่อ-นามสกุลจริง</label>
-        <input type="text" id="fullName" placeholder="ชื่อของคุณ">
-        <label>บริษัท / องค์กร</label>
-        <input type="text" id="company" placeholder="ระบุหน่วยงาน">
-        <label>อีเมล</label>
-        <input type="email" id="email" placeholder="example@mail.com">
-        <label>เบอร์โทรศัพท์</label>
-        <input type="tel" id="phone" maxlength="10">
+    <div id="displayPage" class="card">
+        <div class="header" style="background: var(--primary)">บันทึกข้อมูลสำเร็จแล้ว!</div>
         
-        <button id="mainBtn" class="btn-save" onclick="saveMemberData()">บันทึกข้อมูลสมาชิก</button>
-    </div>
+        <div class="member-card">
+            <div class="card-label">VIP MEMBER</div>
+            <div id="resName" class="card-name">-</div>
+            <div id="resCompany" class="card-detail">บริษัท: -</div>
+            <div id="resPhone" class="card-detail">โทร: -</div>
+            <div style="margin-top:20px; text-align:right;">
+                <img id="userImg" src="" style="width:50px; border-radius:50%; border:2px solid var(--gold)">
+            </div>
+        </div>
 
-    <div class="service-menu">
-        <div class="service-title">แจ้งความประสงค์ (ระบุรายละเอียดในโน้ต)</div>
-        <textarea id="userNote" rows="3" placeholder="พิมพ์รายละเอียด เช่น แจ้งซ่อมจุดไหน..."></textarea>
-        
-        <div class="btn-grid" style="margin-top:15px;">
-            <button class="btn-service" onclick="handleService('สอบถามข้อมูลบริการ')">
-                <span class="icon">ℹ️</span> สอบถามบริการ
-            </button>
-            <button class="btn-service" onclick="handleService('ติดต่อสอบถามสินค้า')">
-                <span class="icon">📦</span> สอบถามสินค้า
-            </button>
-            <button class="btn-service btn-full" onclick="handleService('แจ้งตรวจเช็คสภาพเครื่องจักร')">
-                <span class="icon">🛠️</span> แจ้งตรวจเช็คสภาพเครื่องจักร
-            </button>
+        <div style="padding: 0 25px 25px;">
+            <div style="font-size: 0.8rem; color: #888; text-align: center; margin-bottom: 20px;">
+                * ข้อมูลของคุณถูกบันทึกในระบบเรียบร้อยแล้ว
+            </div>
+            <button class="btn-main" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+            <button class="btn-outline" onclick="showForm()">แก้ไขข้อมูล</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- ตั้งค่าข้อมูลของคุณตรงนี้ ---
     const LIFF_ID = "2008820291-s6WNZ5xr"; 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmG9VJb4gbYUVJeL9bDIZR8_AMuOI_eeZKzpdtJ-otUFSxBevThyxKHjUyy1YZZ_cW4A/exec
-"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmG9VJb4gbYUVJeL9bDIZR8_AMuOI_eeZKzpdtJ-otUFSxBevThyxKHjUyy1YZZ_cW4A/exec"; 
 
     async function main() {
-        try {
-            await liff.init({ liffId: LIFF_ID });
-            if (!liff.isLoggedIn()) {
-                liff.login();
-            } else {
-                const profile = await liff.getProfile();
-                document.getElementById("displayName").innerText = profile.displayName;
-                if (profile.pictureUrl) {
-                    document.getElementById("pictureUrl").src = profile.pictureUrl;
-                    document.getElementById("pictureUrl").style.display = "block";
-                }
-                const token = liff.getDecodedIDToken();
-                if (token && token.email) document.getElementById("email").value = token.email;
-                loadMemberData(profile.userId);
-            }
-        } catch (err) { console.error(err); }
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) { liff.login(); } 
+        else {
+            const profile = await liff.getProfile();
+            document.getElementById("userImg").src = profile.pictureUrl;
+            // เช็คว่าเคยมีข้อมูลไหม ถ้ามีให้ข้ามไปหน้าบัตรเลย
+            checkExisting(profile.userId);
+        }
     }
 
-    async function loadMemberData(userId) {
-        toggleLoading(true, "กำลังโหลดข้อมูล...");
+    async function checkExisting(userId) {
         try {
             const res = await fetch(`${SCRIPT_URL}?userId=${userId}`);
             const data = await res.json();
             if (data.status === "found") {
-                document.getElementById("fullName").value = data.fullName || "";
-                document.getElementById("company").value = data.company || "";
-                document.getElementById("email").value = data.email || "";
-                document.getElementById("phone").value = data.phone || "";
-                document.getElementById("mainBtn").innerText = "อัปเดตข้อมูลสมาชิก";
+                showDisplay(data);
             }
         } catch (e) { }
-        toggleLoading(false);
     }
 
-    async function saveMemberData() {
-        const payload = getFields();
-        if (!payload.fullName || payload.phone.length < 10) return alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-        toggleLoading(true, "กำลังบันทึก...");
-        
-        fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
-        .then(() => { alert("บันทึกข้อมูลสำเร็จ!"); toggleLoading(false); })
-        .catch(() => { alert("บันทึกไม่สำเร็จ"); toggleLoading(false); });
-    }
+    async function saveAndShow() {
+        const profile = await liff.getProfile();
+        const payload = {
+            userId: profile.userId,
+            lineName: profile.displayName,
+            fullName: document.getElementById("fullName").value,
+            company: document.getElementById("company").value,
+            phone: document.getElementById("phone").value,
+            note: document.getElementById("userNote").value,
+            topic: "ลงทะเบียนสมาชิก"
+        };
 
-    async function handleService(topic) {
-        const payload = getFields();
-        payload.topic = topic;
-        payload.note = document.getElementById("userNote").value;
+        if (!payload.fullName || !payload.phone) return alert("กรุณากรอกข้อมูลให้ครบ");
 
-        if (!payload.fullName || payload.phone.length < 10) return alert("กรุณาลงทะเบียนสมาชิกก่อนครับ");
-        if (!payload.note) return alert("กรุณาพิมพ์รายละเอียดในช่องโน้ตก่อนครับ");
+        document.getElementById("loading").style.display = "flex";
 
-        toggleLoading(true, "กำลังส่งรายการ...");
-        
         try {
+            // 1. บันทึกลง Sheets
             await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            
+
+            // 2. ส่งแชทแจ้งเตือน
             if (liff.isInClient()) {
                 await liff.sendMessages([{
                     "type": "text",
-                    "text": `🔔 รายการแจ้งใหม่!\n📌 บริการ: ${topic}\n📝 โน้ต: ${payload.note}\n----------\n👤 ชื่อ: ${payload.fullName}\n🏢 บริษัท: ${payload.company || '-'}\n📞 โทร: ${payload.phone}`
+                    "text": `✅ บันทึกข้อมูลสำเร็จ\n👤 คุณ: ${payload.fullName}\n🏢 บริษัท: ${payload.company}\n📝 โน้ต: ${payload.note || '-'}`
                 }]);
             }
-            alert("แจ้งบริการเรียบร้อย!");
-            document.getElementById("userNote").value = "";
-            liff.closeWindow();
-        } catch (err) { alert("เกิดข้อผิดพลาด"); }
-        toggleLoading(false);
+
+            // 3. สลับหน้าจอไปโชว์บัตร
+            showDisplay(payload);
+            alert("บันทึกเรียบร้อย!");
+        } catch (e) { alert("เกิดข้อผิดพลาด"); }
+        document.getElementById("loading").style.display = "none";
     }
 
-    function getFields() {
-        return {
-            userId: liff.getDecodedIDToken().sub,
-            lineName: document.getElementById("displayName").innerText,
-            fullName: document.getElementById("fullName").value,
-            company: document.getElementById("company").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value
-        };
+    function showDisplay(data) {
+        document.getElementById("resName").innerText = data.fullName;
+        document.getElementById("resCompany").innerText = "บริษัท: " + (data.company || "-");
+        document.getElementById("resPhone").innerText = "โทร: " + (data.phone || "-");
+        
+        document.getElementById("formPage").classList.remove("active");
+        document.getElementById("displayPage").classList.add("active");
     }
 
-    function toggleLoading(show, text = "") {
-        document.getElementById("loading").style.display = show ? "flex" : "none";
-        document.getElementById("loadText").innerText = text;
+    function showForm() {
+        document.getElementById("displayPage").classList.remove("active");
+        document.getElementById("formPage").classList.add("active");
     }
 
     main();
