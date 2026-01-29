@@ -3,82 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Member Card</title>
+    <title>Member Registration</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    
     <style>
-        :root { --primary-color: #00b900; --secondary-color: #009900; --bg-color: #f0f2f5; }
-        body { font-family: 'Kanit', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        .card { background: white; width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 30px; text-align: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; }
-        
-        .profile-section { text-align: center; padding: 25px 20px 10px; background: #fff; }
-        #pictureUrl { width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--bg-color); margin: 0 auto 15px; display: none; object-fit: cover; }
-        .user-name { font-size: 1.2rem; font-weight: bold; color: #333; }
-        
-        .form-section { padding: 10px 30px 35px; }
-        label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: #666; margin-top: 15px; }
-        input { width: 100%; padding: 12px 15px; border: 1.5px solid #eee; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.3s; font-family: 'Kanit'; }
-        input:focus { border-color: var(--primary-color); background: #f9fff9; }
-        
-        button { width: 100%; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.3s; margin-top: 20px; font-family: 'Kanit'; }
-        .btn-save { background: var(--primary-color); color: white; box-shadow: 0 6px 15px rgba(0,185,0,0.2); }
-        .btn-save:active { transform: scale(0.98); }
-        .btn-close { background: #fff; color: #ff4757; border: 1.5px solid #ff4757; margin-top: 10px; }
-        
-        /* Loading Overlay */
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: none; justify-content: center; align-items: center; z-index: 99; flex-direction: column; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        :root { --primary: #00b900; --bg: #f4f7f6; }
+        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--primary); color: white; padding: 25px; text-align: center; font-size: 1.5rem; font-weight: bold; }
+        .profile { text-align: center; padding: 20px; }
+        #pictureUrl { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); margin: 0 auto 10px; display: none; }
+        .form { padding: 0 25px 25px; }
+        label { display: block; margin-top: 15px; font-size: 0.9rem; color: #666; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-family: 'Kanit'; }
+        button { width: 100%; padding: 15px; margin-top: 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Kanit'; font-size: 1rem; }
+        .btn-save { background: var(--primary); color: white; }
+        .btn-close { background: none; color: #ff4757; border: 1px solid #ff4757; margin-top: 10px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div id="loading" class="loading-overlay">
-        <div class="loader"></div>
-        <div id="loadingText">กำลังเตรียมข้อมูล...</div>
+<div id="loading" class="overlay"><div>กำลังดำเนินการ...</div></div>
+
+<div class="card">
+    <div class="header">VIP MEMBER</div>
+    <div class="profile">
+        <img id="pictureUrl" src="">
+        <div id="displayName" style="font-weight:bold">Loading...</div>
     </div>
+    <div class="form">
+        <label>ชื่อ-นามสกุล</label>
+        <input type="text" id="fullName">
+        
+        <label>ชื่อบริษัท</label>
+        <input type="text" id="company">
+        
+        <label>อีเมล</label>
+        <input type="email" id="email">
+        
+        <label>เบอร์โทรศัพท์</label>
+        <input type="tel" id="phone" maxlength="10">
+        
+        <button id="mainBtn" class="btn-save" onclick="saveData()">บันทึกข้อมูล</button>
+        <button class="btn-close" onclick="liff.closeWindow()">ยกเลิก</button>
+    </div>
+</div>
 
-    <div class="card">
-        <div class="header">ข้อมูลสมาชิก VIP</div>
-        <div class="profile-section">
-            <img id="pictureUrl" src="" alt="Profile">
-            <div id="displayName" class="user-name">Loading Profile...</div>
-        </div>
+<script>
+    const LIFF_ID = "2008820291-s6WNZ5xr"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZJedCJFZmGLtEwgSlxFLxKZfl0xPS0J3MQfN3LQAba7Xnp2FtH1kJbg0wlo6hkKjVwQ/exec"; 
 
-        <div class="form-section">
-            <label>ชื่อ-นามสกุลจริง</label>
-            <input type="text" id="fullName" placeholder="นายใจดี มีความสุข">
-
-            <label>ชื่อบริษัท / องค์กร</label>
-            <input type="text" id="company" placeholder="ระบุชื่อหน่วยงาน">
-
-            <label>อีเมล</label>
-            <input type="email" id="email" placeholder="example@mail.com">
-
-            <label>เบอร์โทรศัพท์</label>
-            <input type="tel" id="phone" placeholder="08XXXXXXXX" maxlength="10">
+    async function main() {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+            liff.login();
+        } else {
+            const profile = await liff.getProfile();
+            document.getElementById("displayName").innerText = profile.displayName;
+            if (profile.pictureUrl) {
+                document.getElementById("pictureUrl").src = profile.pictureUrl;
+                document.getElementById("pictureUrl").style.display = "block";
+            }
             
-            <button id="mainBtn" class="btn-save" onclick="saveData()">บันทึกข้อมูลสมาชิก</button>
-            <button class="btn-close" onclick="liff.closeWindow()">ยกเลิก</button>
-        </div>
-    </div>
+            // ดึง Email เริ่มต้น
+            const token = liff.getDecodedIDToken();
+            if (token && token.email) document.getElementById("email").value = token.email;
 
-    <script>
-        // --- 1. ตั้งค่าไอดี (ห้ามลืมเปลี่ยน!) ---
-        const MY_LIFF_ID = "2008820291-s6WNZ5xr"; 
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxht7UaVLSV9mpKtEo2gkfuTEJt2dKKvoPqE7q9FudueGi2ihEdJkK6jjiYQbNdl4PNZA/exec"; 
+            loadOldData(profile.userId);
+        }
+    }
 
-        async function main() {
-            try {
-                await liff.init({ liffId: MY_LIFF_ID });
-                if (liff.isLoggedIn()) {
-                    await setupUI();
-                } else {
-                    liff.login();
-                }
-            } catch (err) {
-                console.error("LIFF Init Error:", err);
-                alert("ไม่สามารถโหลด LIFF ได้ กรุณาลองให
+    async function loadOldData(userId) {
+        document.getElementById("loading").style.display = "flex";
+        try {
+            const res = await fetch(`${SCRIPT_URL}?userId=${userId}`);
+            const data = await res.json();
+            if (data.status === "found") {
+                document.getElementById("fullName").value = data.fullName;
+                document.getElementById("company").value = data.company;
+                document.getElementById("email").value = data.email;
+                document.getElementById("phone").value = data.phone;
+                document.getElementById("mainBtn").innerText = "อัปเดตข้อมูลเดิม";
+            }
+        } catch (e) { console.log("New User"); }
+        document.getElementById("loading").style.display = "none";
+    }
+
+    async function saveData() {
+        const profile = await liff.getProfile();
+        const payload = {
+            userId: profile.userId,
+            lineName: profile.displayName,
+            fullName: document.getElementById("fullName").value,
+            company: document.getElementById("company").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value
+        };
+
+        if (!payload.fullName || !payload.phone) return alert("กรุณากรอกข้อมูลสำคัญ");
+
+        document.getElementById("loading").style.display = "flex";
+
+        // ส่งข้อมูลแบบ POST
+        fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            alert("บันทึกสำเร็จ!");
+            liff.closeWindow();
+        })
+        .catch(err => {
+            console.error(err);
+            alert("บันทึกไม่สำเร็จ แต่ข้อมูลอาจจะเข้าแล้ว โปรดเช็คใน Sheets");
+        })
+        .finally(() => {
+            document.getElementById("loading").style.display = "none";
+        });
+    }
+
+    main();
+</script>
+</body>
+</html>
