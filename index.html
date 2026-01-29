@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THAI SINTO Member Portal</title>
+    <title>THAI SINTO Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
@@ -11,88 +11,69 @@
         body { font-family: 'Kanit', sans-serif; background: var(--soft-bg); margin: 0; padding: 15px; color: #333; }
         .container { width: 100%; max-width: 400px; margin: 0 auto; }
         
-        /* Premium Card Design */
+        /* Card */
         .card-vip { 
             background: linear-gradient(135deg, #1a1a1a, #333); color: white; 
             padding: 30px 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            border: 1px solid var(--accent); position: relative; margin-bottom: 25px;
+            border: 1px solid var(--accent); position: relative; margin-bottom: 20px;
         }
-        .card-label { color: var(--accent); font-size: 0.7rem; letter-spacing: 1.5px; font-weight: 700; }
-        .card-name { font-size: 1.6rem; margin: 12px 0 5px; font-weight: 700; }
-        .card-comp { font-size: 0.9rem; opacity: 0.8; }
-        #userImg { position: absolute; right: 20px; bottom: 25px; width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
+        .card-label { color: var(--accent); font-size: 0.7rem; letter-spacing: 2px; font-weight: bold; }
+        .card-name { font-size: 1.5rem; margin: 10px 0; font-weight: 700; }
+        #userImg { position: absolute; right: 20px; top: 25px; width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); }
 
-        /* Section Design */
-        .section { background: white; border-radius: 18px; padding: 25px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h3 { margin: 0 0 15px 0; font-size: 1.1rem; border-left: 4px solid var(--dark); padding-left: 12px; }
+        /* Form */
+        .section { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h3 { margin: 0 0 15px 0; font-size: 1rem; border-left: 4px solid var(--dark); padding-left: 10px; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #eee; border-radius: 8px; box-sizing: border-box; font-family: 'Kanit'; }
         
-        label { font-size: 0.8rem; color: #999; margin-top: 10px; display: block; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; font-family: 'Kanit'; font-size: 1rem; }
-        input:focus { outline: none; border-color: var(--accent); }
-        
-        .btn-submit { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.3s; font-size: 1rem; }
-        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.3s; }
+        .btn-submit:disabled { background: #ccc; }
 
-        /* History Design */
-        .h-item { border-bottom: 1px solid #f9f9f9; padding: 12px 0; }
-        .h-date { color: #ccc; font-size: 0.7rem; }
-        .h-topic { color: var(--accent); font-weight: bold; font-size: 0.95rem; margin: 2px 0; }
-        .h-note { color: #666; font-size: 0.85rem; line-height: 1.4; }
+        /* History */
+        .h-item { border-bottom: 1px solid #f9f9f9; padding: 10px 0; font-size: 0.85rem; }
+        .h-date { color: #bbb; font-size: 0.7rem; }
+        .h-subject { color: var(--accent); font-weight: bold; }
 
-        .loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; font-weight: bold; }
+        .loading { position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: none; align-items: center; justify-content: center; z-index: 100; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="loading" class="loading">SYNCING DATA...</div>
+<div id="loading" class="loading">PROCESSING...</div>
 
 <div class="container">
     <div class="card-vip">
-        <div class="card-label">THAI SINTO SERVICES</div>
-        <div id="dispName" class="card-name">Guest Customer</div>
-        <div id="dispCompany" class="card-comp">Company: -</div>
-        <img id="userImg" src="https://via.placeholder.com/65">
+        <div class="card-label">THAI SINTO SERVICES & MAINTENANCE</div>
+        <div id="dispName" class="card-name">Guest</div>
+        <div id="dispCompany" style="font-size: 0.9rem; opacity: 0.8;">Company: -</div>
+        <img id="userImg" src="https://via.placeholder.com/60">
     </div>
 
     <div class="section">
         <h3>Request Service / แจ้งบริการ</h3>
-        
-        <label>Subject / หัวข้อ</label>
-        <input type="text" id="subject" placeholder="Enter service topic">
-        
-        <label>Full Name / ชื่อ-นามสกุล</label>
-        <input type="text" id="fullName" placeholder="Your full name">
-        
-        <label>Company / บริษัท</label>
-        <input type="text" id="company" placeholder="Company name">
-        
-        <label>Phone / เบอร์โทร</label>
-        <input type="tel" id="phone" placeholder="0XXXXXXXXX" maxlength="10">
-        
-        <label>Details / รายละเอียด</label>
-        <textarea id="userNote" rows="3" placeholder="Additional information..."></textarea>
-        
+        <input type="text" id="subject" placeholder="Subject / หัวข้อ">
+        <input type="text" id="fullName" placeholder="Full Name / ชื่อ-นามสกุล">
+        <input type="text" id="company" placeholder="Company / บริษัท">
+        <input type="tel" id="phone" placeholder="Phone / เบอร์โทร" maxlength="10">
+        <textarea id="userNote" rows="2" placeholder="Details / รายละเอียด"></textarea>
         <button id="btnSave" class="btn-submit" onclick="saveData()">SUBMIT REQUEST</button>
     </div>
 
     <div class="section">
         <h3>Activity Log / ประวัติ</h3>
-        <div id="historyList">
-            <div style="text-align:center; color:#ddd; padding:20px; font-size: 0.8rem;">No recent history</div>
-        </div>
+        <div id="historyList"></div>
     </div>
 </div>
 
 <script>
-    // --- ตั้งค่าข้อมูล 2 จุดนี้ ---
     const LIFF_ID = "2008820291-s6WNZ5xr"; 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxneWchqyLOtl4XO0Re5qNcAyY8mrEXGFnQTgLCjXt1iowXpajxSBfZYhqjx_z0_KTaPg/exec"; 
+    const SCRIPT_URL = "
+https://script.google.com/macros/s/AKfycbxh_ox1N_B-JSCLTYiOj70X0855BTfNWYUbKTudIUW4OpDQfz9wepvvE-ZcLqi4dLB8jw/exec"; // *** อย่าลืมเปลี่ยนตรงนี้ ***
 
     async function main() {
         await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-            liff.login();
-        } else {
+        if (!liff.isLoggedIn()) { liff.login(); } 
+        else {
             const profile = await liff.getProfile();
             document.getElementById("userImg").src = profile.pictureUrl;
             loadData(profile.userId);
@@ -110,60 +91,54 @@
                 document.getElementById("company").value = data.user.company;
                 document.getElementById("phone").value = data.user.phone;
                 
-                if (data.history.length > 0) {
-                    document.getElementById("historyList").innerHTML = data.history.map(h => `
-                        <div class="h-item">
-                            <div class="h-date">${h.date}</div>
-                            <div class="h-topic">${h.subject}</div>
-                            <div class="h-note">${h.note}</div>
-                        </div>
-                    `).join('');
-                }
+                document.getElementById("historyList").innerHTML = data.history.map(h => `
+                    <div class="h-item">
+                        <div class="h-date">${h.date}</div>
+                        <div class="h-subject">${h.subject}</div>
+                        <div style="color:#666">${h.note}</div>
+                    </div>
+                `).join('');
             }
-        } catch (e) { console.log("New User or Error"); }
+        } catch (e) { console.log("New User"); }
     }
 
     async function saveData() {
-        const sub = document.getElementById("subject").value;
-        const name = document.getElementById("fullName").value;
-        const comp = document.getElementById("company").value;
-        const ph = document.getElementById("phone").value;
-        const note = document.getElementById("userNote").value;
+        const payload = {
+            userId: (await liff.getProfile()).userId,
+            lineName: (await liff.getProfile()).displayName,
+            subject: document.getElementById("subject").value,
+            fullName: document.getElementById("fullName").value,
+            company: document.getElementById("company").value,
+            phone: document.getElementById("phone").value,
+            note: document.getElementById("userNote").value
+        };
 
-        if (!sub || !name || !ph) return alert("Please fill Subject, Name, and Phone.");
+        if (!payload.subject || !payload.fullName || !payload.phone) return alert("Please fill required fields.");
 
         document.getElementById("loading").style.display = "flex";
         document.getElementById("btnSave").disabled = true;
 
-        const profile = await liff.getProfile();
-        const payload = {
-            userId: profile.userId, lineName: profile.displayName,
-            fullName: name, company: comp || "-", phone: ph,
-            subject: sub, note: note
-        };
-
         try {
-            // 1. ส่งข้อมูลไป Google Sheets
-            await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
 
-            // 2. ส่งข้อความแจ้งเตือนเข้าแชท LINE
             if (liff.isInClient()) {
-                const ts = new Date().toLocaleString('en-GB', { hour12: false });
                 await liff.sendMessages([{
                     "type": "text",
-                    "text": `● SERVICE REQUEST\n—\nSubject: ${sub}\nDetails: ${note || '-'}\n\nCustomer: ${name}\nCompany: ${comp || '-'}\nPhone: ${ph}\n—\n*${ts}*`
+                    "text": `● SERVICE REQUEST\n—\nSubject: ${payload.subject}\nDetails: ${payload.note || '-'}\n\nCustomer: ${payload.fullName}\nCompany: ${payload.company || '-'}\nPhone: ${payload.phone}\n—\n*Recorded successfully*`
                 }]);
             }
-            alert("Request submitted successfully!");
+            alert("Success!");
             location.reload();
         } catch (e) {
-            alert("Error: Please check SCRIPT_URL settings.");
+            alert("Error: " + e.message);
         } finally {
             document.getElementById("loading").style.display = "none";
             document.getElementById("btnSave").disabled = false;
         }
     }
-
     main();
 </script>
 </body>
