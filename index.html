@@ -3,25 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Card System</title>
+    <title>VIP Member Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    
     <style>
         :root { --primary-color: #00b900; --secondary-color: #009900; --bg-color: #f0f2f5; }
         body { font-family: 'Kanit', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .card { background: white; width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: 0.3s; }
+        
+        .card { background: white; width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
         .header { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 30px; text-align: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; }
+        
         .profile-section { text-align: center; padding: 25px 20px 10px; background: #fff; }
         #pictureUrl { width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--bg-color); margin: 0 auto 15px; display: none; object-fit: cover; }
         .user-name { font-size: 1.2rem; font-weight: bold; color: #333; }
-        .form-section { padding: 20px 30px 35px; }
-        label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: #666; font-weight: 400; }
-        input { width: 100%; padding: 12px 15px; margin-bottom: 18px; border: 1.5px solid #eee; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.3s; font-family: 'Kanit'; }
+        
+        .form-section { padding: 10px 30px 35px; }
+        label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: #666; margin-top: 15px; }
+        input { width: 100%; padding: 12px 15px; border: 1.5px solid #eee; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.3s; font-family: 'Kanit'; }
         input:focus { border-color: var(--primary-color); background: #f9fff9; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.3s; margin-bottom: 12px; font-family: 'Kanit'; }
+        
+        button { width: 100%; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.3s; margin-top: 20px; font-family: 'Kanit'; }
         .btn-save { background: var(--primary-color); color: white; box-shadow: 0 6px 15px rgba(0,185,0,0.2); }
-        .btn-save:hover { background: var(--secondary-color); }
-        .btn-close { background: #fff; color: #ff4757; border: 1.5px solid #ff4757; }
+        .btn-save:active { transform: scale(0.98); }
+        .btn-close { background: #fff; color: #ff4757; border: 1.5px solid #ff4757; margin-top: 10px; }
+        
+        /* Loading Overlay */
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: none; justify-content: center; align-items: center; z-index: 99; flex-direction: column; }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -35,15 +42,18 @@
     </div>
 
     <div class="card">
-        <div class="header">VIP MEMBER</div>
+        <div class="header">ข้อมูลสมาชิก VIP</div>
         <div class="profile-section">
             <img id="pictureUrl" src="" alt="Profile">
-            <div id="displayName" class="user-name">Loading...</div>
+            <div id="displayName" class="user-name">Loading Profile...</div>
         </div>
 
         <div class="form-section">
-            <label>ชื่อ-นามสกุล</label>
-            <input type="text" id="fullName" placeholder="กรอกชื่อ-นามสกุลจริง">
+            <label>ชื่อ-นามสกุลจริง</label>
+            <input type="text" id="fullName" placeholder="นายใจดี มีความสุข">
+
+            <label>ชื่อบริษัท / องค์กร</label>
+            <input type="text" id="company" placeholder="ระบุชื่อหน่วยงาน">
 
             <label>อีเมล</label>
             <input type="email" id="email" placeholder="example@mail.com">
@@ -57,9 +67,9 @@
     </div>
 
     <script>
-        // --- ส่วนที่คุณต้องเปลี่ยน ---
+        // --- 1. ตั้งค่าไอดี (ห้ามลืมเปลี่ยน!) ---
         const MY_LIFF_ID = "2008820291-s6WNZ5xr"; 
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxclnDsSVuPkWsITkSUiy8SgW-j-PUSXlLsy-m-OPUSCx4xL78QU_flYIvrnGdyjlwnZg/exec"; 
+        const GOOGLE_SCRIPT_URL = "วาง_URL_ของ_APPS_SCRIPT_ที่นี่"; 
 
         async function main() {
             try {
@@ -69,85 +79,6 @@
                 } else {
                     liff.login();
                 }
-            } catch (err) { console.error("Init Error:", err); }
-        }
-
-        async function setupUI() {
-            const profile = await liff.getProfile();
-            document.getElementById("displayName").innerText = profile.displayName;
-            if (profile.pictureUrl) {
-                document.getElementById("pictureUrl").src = profile.pictureUrl;
-                document.getElementById("pictureUrl").style.display = "block";
-            }
-
-            // ดึง Email จากระบบ LINE มาใส่เบื้องต้น (ถ้าขอสิทธิ์ผ่าน)
-            try {
-                const idToken = liff.getDecodedIDToken();
-                if (idToken && idToken.email) {
-                    document.getElementById("email").value = idToken.email;
-                }
-            } catch (e) { console.log("Email not permitted"); }
-
-            // เช็คว่ามีข้อมูลเดิมใน Sheets ไหม
-            checkExistingMember(profile.userId);
-        }
-
-        async function checkExistingMember(userId) {
-            document.getElementById("loading").style.display = "flex";
-            try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?userId=${userId}`);
-                const result = await response.json();
-                if (result.status === "found") {
-                    document.getElementById("fullName").value = result.fullName;
-                    document.getElementById("email").value = result.email;
-                    document.getElementById("phone").value = result.phone;
-                    document.getElementById("mainBtn").innerText = "อัปเดตข้อมูลของคุณ";
-                    document.querySelector(".header").innerText = "MEMBER PROFILE";
-                }
-            } catch (e) { console.log("No existing data"); }
-            finally { document.getElementById("loading").style.display = "none"; }
-        }
-
-        async function saveData() {
-            const fullName = document.getElementById("fullName").value;
-            const email = document.getElementById("email").value;
-            const phone = document.getElementById("phone").value;
-            
-            if (!fullName || !email || phone.length < 10) {
-                alert("กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง");
-                return;
-            }
-
-            document.getElementById("loadingText").innerText = "กำลังบันทึก...";
-            document.getElementById("loading").style.display = "flex";
-
-            try {
-                const profile = await liff.getProfile();
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({
-                        userId: profile.userId,
-                        lineName: profile.displayName,
-                        fullName: fullName,
-                        email: email,
-                        phone: phone
-                    })
-                });
-
-                if (liff.isInClient()) {
-                    await liff.sendMessages([{
-                        "type": "text",
-                        "text": "✅ บันทึกข้อมูลสำเร็จ!\nชื่อ: " + fullName + "\nอีเมล: " + email
-                    }]);
-                }
-                alert("บันทึกเรียบร้อย!");
-                liff.closeWindow();
-            } catch (e) { alert("บันทึกไม่สำเร็จ กรุณาลองใหม่"); }
-            finally { document.getElementById("loading").style.display = "none"; }
-        }
-
-        main();
-    </script>
-</body>
-</html>
+            } catch (err) {
+                console.error("LIFF Init Error:", err);
+                alert("ไม่สามารถโหลด LIFF ได้ กรุณาลองให
