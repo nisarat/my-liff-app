@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,15 +11,18 @@
         body { font-family: 'Kanit', sans-serif; background: #f0f0f0; margin: 0; padding: 15px; color: var(--text); }
         .container { width: 100%; max-width: 420px; margin: 0 auto; }
         
-        /* Premium Card - Black & White */
+        /* Premium Card - Metallic Silver */
         .card-vip { 
-            background: var(--main); color: #ffffff; 
-            padding: 40px 25px; border-radius: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            /* ปรับเป็นสีเงิน Metallic แบบไล่เฉด */
+            background: linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%); 
+            color: #ffffff; 
+            padding: 40px 25px; border-radius: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             position: relative; margin-bottom: 35px; text-align: left;
+            border: 1px solid rgba(255,255,255,0.3);
         }
         .card-label { font-size: 1.1rem; letter-spacing: 2px; font-weight: 700; color: #ffffff; border-bottom: 2px solid #fff; display: inline-block; margin-bottom: 15px; }
-        .card-name { font-size: 2.2rem; font-weight: 700; margin: 10px 0 5px; text-transform: uppercase; }
-        .card-detail { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; }
+        .card-name { font-size: 2.2rem; font-weight: 700; margin: 10px 0 5px; text-transform: uppercase; color: #ffffff; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
+        .card-detail { font-size: 1.1rem; opacity: 1; margin-top: 5px; color: #ffffff; font-weight: 400; }
         
         /* รูปโปรไฟล์ใหญ่สะใจ */
         #userImg { position: absolute; right: 20px; bottom: -20px; width: 110px; height: 110px; border-radius: 20px; border: 4px solid #fff; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.15); object-fit: cover; }
