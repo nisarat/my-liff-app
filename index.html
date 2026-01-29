@@ -7,69 +7,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        :root { --accent: #D4AF37; --dark: #1a1a1a; --soft-bg: #f8f9fa; --text: #333; }
-        body { font-family: 'Kanit', sans-serif; background: var(--soft-bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 400px; }
+        :root { --accent: #D4AF37; --dark: #1a1a1a; --soft-bg: #f8f9fa; }
+        body { font-family: 'Kanit', sans-serif; background: var(--soft-bg); margin: 0; padding: 15px; color: #333; }
+        .container { width: 100%; max-width: 400px; margin: 0 auto; }
         
+        /* Card */
         .card-vip { 
-            background: linear-gradient(135deg, #1a1a1a, #3a3a3a); color: white; 
-            padding: 30px 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 1px solid var(--accent); position: relative; margin-bottom: 25px; overflow: hidden;
+            background: linear-gradient(135deg, #1a1a1a, #333); color: white; 
+            padding: 30px 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 1px solid var(--accent); position: relative; margin-bottom: 20px;
         }
-        .card-vip img { position: absolute; right: 20px; bottom: 25px; width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
-        .card-label { color: var(--accent); font-size: 0.75rem; letter-spacing: 1.2px; font-weight: bold; }
-        .card-name { font-size: 1.5rem; margin: 12px 0 5px; font-weight: bold; color: #fff; }
-        .card-comp { font-size: 0.9rem; opacity: 0.8; color: #ddd; }
+        .card-label { color: var(--accent); font-size: 0.7rem; letter-spacing: 2px; font-weight: bold; }
+        .card-name { font-size: 1.5rem; margin: 10px 0; font-weight: 700; }
+        #userImg { position: absolute; right: 20px; top: 25px; width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); }
+
+        /* Form */
+        .section { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h3 { margin: 0 0 15px 0; font-size: 1rem; border-left: 4px solid var(--dark); padding-left: 10px; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #eee; border-radius: 8px; box-sizing: border-box; font-family: 'Kanit'; }
         
-        .section { background: white; border-radius: 18px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--text); border-left: 4px solid var(--dark); padding-left: 12px; }
-        
-        label { font-size: 0.8rem; color: #999; margin-top: 10px; display: block; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; font-family: 'Kanit'; font-size: 1rem; }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent); }
-        
-        button { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer; font-family: 'Kanit'; transition: 0.3s; font-size: 1rem; }
-        button:active { transform: scale(0.98); }
-        
-        .history-item { border-bottom: 1px solid #f9f9f9; padding: 12px 0; }
-        .h-date { color: #ccc; font-size: 0.7rem; margin-bottom: 3px; }
-        .h-topic { font-weight: bold; color: var(--accent); font-size: 0.9rem; }
-        .h-note { color: #666; font-size: 0.85rem; }
-        
-        .loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; font-weight: bold; color: #333; }
+        .btn-submit { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.3s; }
+        .btn-submit:disabled { background: #ccc; }
+
+        /* History */
+        .h-item { border-bottom: 1px solid #f9f9f9; padding: 10px 0; font-size: 0.85rem; }
+        .h-date { color: #bbb; font-size: 0.7rem; }
+        .h-subject { color: var(--accent); font-weight: bold; }
+
+        .loading { position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: none; align-items: center; justify-content: center; z-index: 100; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="loading" class="loading">SYNCING DATA...</div>
+<div id="loading" class="loading">PROCESSING...</div>
 
 <div class="container">
     <div class="card-vip">
         <div class="card-label">THAI SINTO SERVICES & MAINTENANCE</div>
-        <div id="dispName" class="card-name">Guest Customer</div>
-        <div id="dispCompany" class="card-comp">Company: -</div>
-        <img id="userImg" src="https://via.placeholder.com/65">
+        <div id="dispName" class="card-name">Guest</div>
+        <div id="dispCompany" style="font-size: 0.9rem; opacity: 0.8;">Company: -</div>
+        <img id="userImg" src="https://via.placeholder.com/60">
     </div>
 
     <div class="section">
         <h3>Request Service / แจ้งบริการ</h3>
-        
-        <label>Subject / หัวข้อการแจ้ง</label>
-        <input type="text" id="subject" placeholder="e.g. Machine Repair, Maintenance">
-        
-        <label>Full Name / ชื่อ-นามสกุล</label>
-        <input type="text" id="fullName" placeholder="Your name">
-        
-        <label>Company / บริษัท</label>
-        <input type="text" id="company" placeholder="Company name">
-        
-        <label>Phone / เบอร์โทร</label>
-        <input type="tel" id="phone" placeholder="0XXXXXXXXX" maxlength="10">
-        
-        <label>Details / รายละเอียด</label>
-        <textarea id="userNote" rows="3" placeholder="Additional notes..."></textarea>
-        
-        <button onclick="saveData()">SUBMIT REQUEST</button>
+        <input type="text" id="subject" placeholder="Subject / หัวข้อ">
+        <input type="text" id="fullName" placeholder="Full Name / ชื่อ-นามสกุล">
+        <input type="text" id="company" placeholder="Company / บริษัท">
+        <input type="tel" id="phone" placeholder="Phone / เบอร์โทร" maxlength="10">
+        <textarea id="userNote" rows="2" placeholder="Details / รายละเอียด"></textarea>
+        <button id="btnSave" class="btn-submit" onclick="saveData()">SUBMIT REQUEST</button>
     </div>
 
     <div class="section">
@@ -80,8 +67,7 @@
 
 <script>
     const LIFF_ID = "2008820291-s6WNZ5xr"; 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3AK-4qYP__eWO6wZ9NeZ-3637rOFeKom2HSB23h0MJTs-6MxWGggcY68xCjZ9KorSnA/exec
-"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3_AL4iK-QGlyJtQZljj7dxWQeeNXHgizKKiAxfQ8_N1KUq7lpgd6wLDrvxqDs05ECDg/exec"; // *** อย่าลืมเปลี่ยนตรงนี้ ***
 
     async function main() {
         await liff.init({ liffId: LIFF_ID });
@@ -94,7 +80,6 @@
     }
 
     async function loadData(userId) {
-        document.getElementById("loading").style.display = "flex";
         try {
             const res = await fetch(`${SCRIPT_URL}?userId=${userId}`);
             const data = await res.json();
@@ -105,54 +90,54 @@
                 document.getElementById("company").value = data.user.company;
                 document.getElementById("phone").value = data.user.phone;
                 
-                const list = document.getElementById("historyList");
-                list.innerHTML = data.history.map(h => `
-                    <div class="history-item">
+                document.getElementById("historyList").innerHTML = data.history.map(h => `
+                    <div class="h-item">
                         <div class="h-date">${h.date}</div>
-                        <div class="h-topic">${h.topic}</div>
-                        <div class="h-note">${h.note}</div>
+                        <div class="h-subject">${h.subject}</div>
+                        <div style="color:#666">${h.note}</div>
                     </div>
                 `).join('');
             }
-        } catch (e) { }
-        document.getElementById("loading").style.display = "none";
+        } catch (e) { console.log("New User"); }
     }
 
     async function saveData() {
-        const sub = document.getElementById("subject").value;
-        const name = document.getElementById("fullName").value;
-        const comp = document.getElementById("company").value;
-        const ph = document.getElementById("phone").value;
-        const note = document.getElementById("userNote").value;
-
-        if (!sub || !name || !ph) return alert("Please fill Subject, Name, and Phone.");
-
-        document.getElementById("loading").style.display = "flex";
-        const profile = await liff.getProfile();
         const payload = {
-            userId: profile.userId, lineName: profile.displayName,
-            fullName: name, company: comp, phone: ph,
-            subject: sub, note: note
+            userId: (await liff.getProfile()).userId,
+            lineName: (await liff.getProfile()).displayName,
+            subject: document.getElementById("subject").value,
+            fullName: document.getElementById("fullName").value,
+            company: document.getElementById("company").value,
+            phone: document.getElementById("phone").value,
+            note: document.getElementById("userNote").value
         };
 
+        if (!payload.subject || !payload.fullName || !payload.phone) return alert("Please fill required fields.");
+
+        document.getElementById("loading").style.display = "flex";
+        document.getElementById("btnSave").disabled = true;
+
         try {
-            await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            
+            const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+
             if (liff.isInClient()) {
-                const now = new Date();
-                const ts = `${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'})}`;
-                
                 await liff.sendMessages([{
                     "type": "text",
-                    "text": `● NEW SERVICE REQUEST\n—\nSubject: ${sub}\nDetails: ${note || '-'}\n\nCustomer: ${name}\nCompany: ${comp || '-'}\nPhone: ${ph}\n—\n*${ts}*`
+                    "text": `● SERVICE REQUEST\n—\nSubject: ${payload.subject}\nDetails: ${payload.note || '-'}\n\nCustomer: ${payload.fullName}\nCompany: ${payload.company || '-'}\nPhone: ${payload.phone}\n—\n*Recorded successfully*`
                 }]);
             }
-            alert("Sent Successfully!");
+            alert("Success!");
             location.reload();
-        } catch (e) { alert("Error"); }
-        document.getElementById("loading").style.display = "none";
+        } catch (e) {
+            alert("Error: " + e.message);
+        } finally {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("btnSave").disabled = false;
+        }
     }
-
     main();
 </script>
 </body>
