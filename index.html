@@ -11,7 +11,6 @@
         body { font-family: 'Kanit', sans-serif; background: var(--soft-bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 400px; }
         
-        /* Premium Member Card */
         .card-vip { 
             background: linear-gradient(135deg, #1a1a1a, #3a3a3a); color: white; 
             padding: 30px 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -22,22 +21,20 @@
         .card-name { font-size: 1.5rem; margin: 12px 0 5px; font-weight: bold; color: #fff; }
         .card-comp { font-size: 0.9rem; opacity: 0.8; color: #ddd; }
         
-        /* UI Sections */
         .section { background: white; border-radius: 18px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
         h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--text); border-left: 4px solid var(--dark); padding-left: 12px; }
         
-        label { font-size: 0.85rem; color: #888; margin-top: 10px; display: block; }
+        label { font-size: 0.8rem; color: #999; margin-top: 10px; display: block; text-transform: uppercase; }
         input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; font-family: 'Kanit'; font-size: 1rem; }
         input:focus, textarea:focus { outline: none; border-color: var(--accent); }
         
         button { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer; font-family: 'Kanit'; transition: 0.3s; font-size: 1rem; }
         button:active { transform: scale(0.98); }
         
-        /* Log List */
         .history-item { border-bottom: 1px solid #f9f9f9; padding: 12px 0; }
-        .history-item:last-child { border: none; }
         .h-date { color: #ccc; font-size: 0.7rem; margin-bottom: 3px; }
-        .h-note { color: #666; font-size: 0.9rem; }
+        .h-topic { font-weight: bold; color: var(--accent); font-size: 0.9rem; }
+        .h-note { color: #666; font-size: 0.85rem; }
         
         .loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; font-weight: bold; color: #333; }
     </style>
@@ -55,41 +52,41 @@
     </div>
 
     <div class="section">
-        <h3>Service Request / แจ้งบริการ</h3>
+        <h3>Request Service / แจ้งบริการ</h3>
+        
+        <label>Subject / หัวข้อการแจ้ง</label>
+        <input type="text" id="subject" placeholder="e.g. Machine Repair, Maintenance">
         
         <label>Full Name / ชื่อ-นามสกุล</label>
-        <input type="text" id="fullName" placeholder="Enter your name">
+        <input type="text" id="fullName" placeholder="Your name">
         
         <label>Company / บริษัท</label>
-        <input type="text" id="company" placeholder="Enter company name">
+        <input type="text" id="company" placeholder="Company name">
         
         <label>Phone / เบอร์โทร</label>
         <input type="tel" id="phone" placeholder="0XXXXXXXXX" maxlength="10">
         
         <label>Details / รายละเอียด</label>
-        <textarea id="userNote" rows="3" placeholder="How can we help you?"></textarea>
+        <textarea id="userNote" rows="3" placeholder="Additional notes..."></textarea>
         
         <button onclick="saveData()">SUBMIT REQUEST</button>
     </div>
 
     <div class="section">
         <h3>Activity Log / ประวัติ</h3>
-        <div id="historyList">
-            <div style="text-align:center; color:#ddd; padding:20px; font-size: 0.85rem;">No recent history</div>
-        </div>
+        <div id="historyList"></div>
     </div>
 </div>
 
 <script>
-    // --- ตั้งค่าข้อมูลตรงนี้ ---
     const LIFF_ID = "2008820291-s6WNZ5xr"; 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzjetrJkN9qYACPI8f1tCTgUlujx0MB72Q_Skn3BsieK2zeiauRVLOCSwVcTW73yn1wA/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3AK-4qYP__eWO6wZ9NeZ-3637rOFeKom2HSB23h0MJTs-6MxWGggcY68xCjZ9KorSnA/exec
+"; 
 
     async function main() {
         await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-            liff.login();
-        } else {
+        if (!liff.isLoggedIn()) { liff.login(); } 
+        else {
             const profile = await liff.getProfile();
             document.getElementById("userImg").src = profile.pictureUrl;
             loadData(profile.userId);
@@ -112,54 +109,48 @@
                 list.innerHTML = data.history.map(h => `
                     <div class="history-item">
                         <div class="h-date">${h.date}</div>
+                        <div class="h-topic">${h.topic}</div>
                         <div class="h-note">${h.note}</div>
                     </div>
                 `).join('');
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { }
         document.getElementById("loading").style.display = "none";
     }
 
     async function saveData() {
+        const sub = document.getElementById("subject").value;
         const name = document.getElementById("fullName").value;
         const comp = document.getElementById("company").value;
         const ph = document.getElementById("phone").value;
         const note = document.getElementById("userNote").value;
 
-        if (!name || !ph || !note) return alert("Please fill in all fields.");
+        if (!sub || !name || !ph) return alert("Please fill Subject, Name, and Phone.");
 
         document.getElementById("loading").style.display = "flex";
         const profile = await liff.getProfile();
         const payload = {
-            userId: profile.userId, 
-            lineName: profile.displayName,
-            fullName: name, 
-            company: comp || "-",
-            phone: ph, 
-            note: note
+            userId: profile.userId, lineName: profile.displayName,
+            fullName: name, company: comp, phone: ph,
+            subject: sub, note: note
         };
 
         try {
-            // 1. บันทึกข้อมูลลง Google Sheets
             await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
             
-            // 2. ส่งแจ้งเตือนเข้าแชท LINE (แบบเรียบง่ายภาษาอังกฤษ)
             if (liff.isInClient()) {
                 const now = new Date();
                 const ts = `${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'})}`;
                 
                 await liff.sendMessages([{
                     "type": "text",
-                    "text": `● SERVICE REQUEST\n—\nDetails\n${note}\n\nCustomer\n${name}\n${comp || '-'}\n${ph}\n—\n*${ts}*`
+                    "text": `● NEW SERVICE REQUEST\n—\nSubject: ${sub}\nDetails: ${note || '-'}\n\nCustomer: ${name}\nCompany: ${comp || '-'}\nPhone: ${ph}\n—\n*${ts}*`
                 }]);
             }
-            alert("Request Sent Successfully!");
+            alert("Sent Successfully!");
             location.reload();
-        } catch (e) { 
-            alert("Submission failed. Please try again."); 
-        } finally {
-            document.getElementById("loading").style.display = "none";
-        }
+        } catch (e) { alert("Error"); }
+        document.getElementById("loading").style.display = "none";
     }
 
     main();
